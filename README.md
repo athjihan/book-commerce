@@ -2,6 +2,18 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+```bash
+git clone https://github.com/athjihan/book-commerce.git
+
+#and then
+
+cd book-commerce
+
+#and then
+
+npm install
+```
+
 First, run the development server:
 
 ```bash
