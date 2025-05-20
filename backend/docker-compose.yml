@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  # Redis
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  # RabbitMQ
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  # book-search service
+  book-search:
+    build: ./services/book-search
+    container_name: book-search
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./services/book-search/.env
+    depends_on:
+      - redis
+      - rabbitmq
+
+  # book-detail service
+  book-detail:
+    build: ./services/book-detail
+    container_name: book-detail
+    ports:
+      - "3001:3000"
+    env_file:
+      - ./services/book-detail/.env
+    depends_on:
+      - redis
+
+  # book-display service
+  book-display:
+    build: ./services/book-display
+    container_name: book-display
+    ports:
+      - "3002:3000"
+    env_file:
+      - ./services/book-display/.env
+
