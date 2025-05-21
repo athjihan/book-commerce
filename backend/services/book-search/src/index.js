@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 // Routes
-app.use("/api/detail", bookRoutes);
+app.use("/api/search", bookRoutes);
 
 // Start server
 connectDB().then(() => {
