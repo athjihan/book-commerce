@@ -18,4 +18,3 @@ connectDB().then(() => {
     console.log(`Book service running on port ${PORT} 🚀`);
   });
 });
-
