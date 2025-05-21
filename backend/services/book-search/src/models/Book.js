@@ -12,9 +12,9 @@ const storeSchema = new mongoose.Schema({
 const bookSchema = new mongoose.Schema({
   book_type: String,
   title: String,
-  author: String,
+  author: [String],
   release_date: Date,
-  genre: String,
+  genre: [String],
   synopsis: String,
   description: String,
   price: Number,
