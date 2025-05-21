@@ -11,6 +11,7 @@ const storeSchema = new mongoose.Schema({
 
 const bookSchema = new mongoose.Schema({
   book_type: String,
+  serial_number: String,
   title: String,
   author: [String],
   release_date: Date,
