@@ -40,6 +40,24 @@ Setiap folder memiliki struktur:
 
 ---
 
+## 🧰 Prasyarat
+
+Pastikan kamu memiliki:
+
+- **Node.js** v18 atau lebih baru (**v20+ direkomendasikan**)
+- **npm**, **pnpm**, atau **yarn** (sesuai preferensi)
+
+## ⚙️ Teknologi yang Digunakan
+
+### Backend:
+- **Express.js** : `5.1.0`
+- **Node.js** : `20.0 ++ recomendation`
+- **Docker** : `28.0.4`
+- **RabbitMQ** 
+- **MongoDB**
+- **Redis**
+- **JavaScript**
+
 ## 🔧 Library yang Digunakan
 
 ```json
@@ -55,6 +73,20 @@ Setiap folder memiliki struktur:
   "nodemon": "^3.1.10"
 }
 ```
+
+## ⚙️ Environment Configuration
+
+Buat file `.env` untuk menyimpan konfigurasi endpoint API di masing-masing services:
+
+```env
+PORT= YOUR_PORT
+REDIS_URL= YOUR_REDIS_URL
+RABBITMQ_URL= YOUR_RABBITMQ_URL
+MONGO_URI_PRIMARY= YOUR_MONGO_URL
+MONGO_URI_SECONDARY= YOUR_MONGO_URL
+```
+
+> Pastikan untuk tidak menyimpan data sensitif secara langsung di dalam repositori publik.
 
 ---
 
