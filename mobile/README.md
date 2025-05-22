@@ -1,60 +1,100 @@
-# Welcome to your Expo app 👋
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+# 📱 Frontend Mobile – Book Commerce
 
-## Get started
+Proyek ini merupakan bagian frontend dari aplikasi **Book Commerce** yang dibangun menggunakan **React Native**, **Expo**, dan **NativeWind**.
 
-1. Install dependencies
+## 🛠️ Teknologi yang Digunakan
 
+- **React Native** `v0.79.2`  
+- **Expo** `v53`  
+- **NativeWind** `v4.1`  
+
+## 🚀 Cara Menjalankan Aplikasi
+
+1. Masuk ke folder `mobile`:
+   ```bash
+   cd mobile
+   ```
+
+2. Install semua dependencies:
    ```bash
    npm install
    ```
 
-2. Start the app
+3. Menjalankan aplikasi:
 
-   ```bash
-    for android :
-    npm run android
-    
-    for ios :
-    npm run ios
+   - 📱 **Android**:
+     ```bash
+     npm run android
+     ```
 
-    for website:
-    npm run web
-    
-    or :
-    npx expo start
-   ```
+   - 🍏 **iOS**:
+     ```bash
+     npm run ios
+     ```
 
-In the output, you'll find options to open the app in a
+   - 🌐 **Web**:
+     ```bash
+     npm run web
+     ```
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+   - Atau gunakan Expo CLI:
+     ```bash
+     npx expo start
+     ```
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## 📁 Struktur Folder (Ringkasan)
 
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```
+mobile/
+├── App/
+│   ├── components/
+│   │   └── card.tsx
+│   ├── utils/
+│   │   └── imageMap.ts
+│   ├── _layout.tsx
+│   ├── Global.css
+│   └── index.tsx
+├── Assets/
+│   ├── cover/
+│   ├── Fonts/
+│   └── Images/
+├── Services/
+│   ├── catalogService.js
+│   ├── detailService.js
+│   └── searchService.js
+├── App.json
+├── .gitignore
+├── babel.config.json
+├── eslint.config.json
+├── metro.config.json
+├── nativewind-env.d.ts
+├── package-lock.json
+├── package.json
+├── react-native-vector-icons.d.ts
+├── tailwind.config.js
+├── tsconfig.json
+└── README.md
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## ⚙️ Environment Configuration
 
-## Learn more
+Buat file `app.config.js` untuk menyimpan konfigurasi endpoint API:
 
-To learn more about developing your project with Expo, look at the following resources:
+```js
+export default{
+   expo: {
+      extra : {
+      BOOK_SEARCH_API = "YOUR_API";
+      BOOK_DISPLAY_API = "YOUR_API";
+      BOOK_DETAIL_API = "YOUR_API";
+      },
+   },
+};
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+> Pastikan untuk tidak menyimpan data sensitif secara langsung di dalam repositori publik.
 
-## Join the community
+---
 
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+### 👥 Created by: **Team Skelebel**
