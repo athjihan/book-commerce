@@ -4,8 +4,11 @@ const Book = require("../models/Book");
 
 router.get("/", async (req, res) => {
     try {
-        const books = await Book.find();
-        res.json(books);
+        const books = await Book.find({});
+        res.status(200).json({
+            message: "Berhasil mengambil semua data buku",
+            data: books
+        });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
