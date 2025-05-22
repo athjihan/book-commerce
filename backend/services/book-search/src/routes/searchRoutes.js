@@ -3,32 +3,34 @@ const router = express.Router();
 const Book = require("../models/Book");
 
 router.get("/", async (req, res) => {
-    try {
-        const query = {};
-        if (req.query.title) {
-            query.title = { $regex: req.query.title, $options: "i" };
-        }
-        if (req.query.author) {
-            query.author = { $regex: req.query.author, $options: "i" };
-        }
-        // Tambahin filter lainnya klk mau
+  try {
+    const query = {};
 
-        const books = await Book.find(query);
-        res.json(books);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+    if (!req.query.title && !req.query.author) {
+      return res.status(400).json({ error: "Tidak ada title atau author untuk pencarian." });
     }
-});
+    
+    // Validasi input title
+    if (req.query.title && typeof req.query.title === "string") {
+      if (req.query.title.length > 100) {
+        return res.status(400).json({ error: "Judul terlalu panjang." });
+      }
+      query.title = { $regex: req.query.title, $options: "i" };
+    }
 
-//CREATE INI SEMENTARA, KARENA MAU TAMBAHIN DATA BUANYAK KE DATABASE
-router.post("/create", async (req, res) => {
-    try {
-        const newBook = new Book(req.body);
-        const savedBook = await newBook.save();
-        res.status(201).json(savedBook);
-    } catch (err) {
-        res.status(400).json({ error: err.message });
+    // Validasi input author
+    if (req.query.author && typeof req.query.author === "string") {
+      if (req.query.author.length > 100) {
+        return res.status(400).json({ error: "Nama penulis terlalu panjang." });
+      }
+      query.author = { $regex: req.query.author, $options: "i" };
     }
+
+    const books = await Book.find(query);
+    res.json(books);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 module.exports = router;

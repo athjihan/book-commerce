@@ -1,8 +1,19 @@
 const express = require("express");
 const router = express.Router();
 const Book = require("../models/Book");
+const rateLimit = require("express-rate-limit");
 
-router.get("/", async (req, res) => {
+// ✅ Middleware: Batasi 100 request per menit per IP
+const limiter = rateLimit({
+    windowMs: 60 * 1000,
+    max: 100,
+    message: {
+        status: 429,
+        error: "Terlalu banyak permintaan, silakan coba lagi nanti.",
+    },
+});
+
+router.get("/", limiter, async (req, res) => {
     try {
         const books = await Book.find({});
         res.status(200).json({
@@ -11,16 +22,6 @@ router.get("/", async (req, res) => {
         });
     } catch (err) {
         res.status(500).json({ error: err.message });
-    }
-});
-
-router.post("/create", async (req, res) => {
-    try {
-        const newBook = new Book(req.body);
-        const savedBook = await newBook.save();
-        res.status(201).json(savedBook);
-    } catch (err) {
-        res.status(400).json({ error: err.message });
     }
 });
 

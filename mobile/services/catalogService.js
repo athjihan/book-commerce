@@ -3,7 +3,6 @@ import Constants from 'expo-constants';
 
 const BASE_URL = Constants.expoConfig.extra.BOOK_DISPLAY_API;
 
-// Ubah endpoint menjadi /api/catalog
 export const getAllBooks = async () => {
     try {
         const response = await axios.get(`${BASE_URL}/`);
