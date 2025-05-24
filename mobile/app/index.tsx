@@ -51,7 +51,7 @@ export default function Index() {
   const totalPages = Math.ceil(books.length / booksPerPage);
 
   return (
-    <SafeAreaView className="flex-1 bg-white px-4 pt-6">
+    <SafeAreaView className="flex-1 bg-black px-4 pt-6">
       <ScrollView>
         <View className="flex flex-wrap flex-row justify-between">
           {paginatedBooks.map((book, index) => {
@@ -62,7 +62,7 @@ export default function Index() {
             return (
                 <View
                 key={index}
-                className="w-[31%] bg-gray-100 rounded-2xl p-2 mb-4 shadow-md items-stretch"
+                className="w-[31%] bg-gray-800 rounded-2xl p-2 mb-4 shadow-md items-stretch"
                 style={{ alignSelf: "flex-start" }}
                 >
                 <Image
@@ -70,24 +70,24 @@ export default function Index() {
                   className="w-full h-36 rounded-lg mb-2"
                   resizeMode="cover"
                 />
-                <Text className="text-base font-bold text-black">
+                <Text className="text-base font-bold text-white">
                   {book.title}
                 </Text>
-                <Text className="text-sm text-gray-700">
+                <Text className="text-sm text-gray-200">
                   {book.author.join(", ")}
                 </Text>
-                <Text className="text-sm text-green-600 font-semibold mt-1">
+                <Text className="text-sm text-green-300 font-semibold mt-1">
                   Rp {book.price.toLocaleString()}
                 </Text>
                 {book.book_type === "e-book" ? (
-                  <View className="bg-green-300 px-2 py-0.5 rounded-full mt-1 self-start">
-                  <Text className="text-xs italic text-green-900">
+                  <View className="bg-blue-300 px-2 py-0.5 rounded-full mt-1 self-start">
+                  <Text className="text-xs italic text-blue-950">
                     {book.book_type}
                   </Text>
                   </View>
                 ) : book.book_type === "physics" ? (
                   <View className="bg-red-200 px-2 py-0.5 rounded-full mt-1 self-start">
-                  <Text className="text-xs italic text-red-800">
+                  <Text className="text-xs italic text-red-950">
                     {book.book_type}
                   </Text>
                   </View>
