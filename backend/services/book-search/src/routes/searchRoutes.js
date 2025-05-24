@@ -2,10 +2,18 @@ const express = require("express");
 const router = express.Router();
 const Book = require("../models/Book");
 const redisClient = require("../config/redis");
-const esClient = require("../config/elasticsearch");
+const esClientPromise = require("../config/elasticsearch");
 
 router.get("/", async (req, res) => {
+  let actualEsClient;
   try {
+    try {
+      actualEsClient = await esClientPromise;
+    } catch (initError) {
+      console.error("🔴 Gagal menginisialisasi koneksi ke Elasticsearch:", initError.message);
+      return await fallbackToMongo(req, res);
+    }
+
     if (!req.query.title && !req.query.author) {
       return res.status(400).json({ error: "Tidak ada title atau author untuk pencarian." });
     }
@@ -21,45 +29,88 @@ router.get("/", async (req, res) => {
       return res.json(JSON.parse(cached));
     }
 
-    // Coba search Elasticsearch dulu
     try {
       const should = [];
       if (title) {
-        should.push({ match: { title } });
+        should.push({
+          match: {
+            title: {
+              query: title,
+              operator: "or",
+              fuzziness: "AUTO"
+            }
+          }
+        });
       }
       if (author) {
-        should.push({ match: { author } });
+        should.push({
+          match: {
+            author: {
+              query: author,
+              operator: "or",
+              fuzziness: "AUTO"
+            }
+          }
+        });
       }
 
-      const { hits } = await esClient.search({
+      if (should.length === 0) {
+        console.log("Tidak ada kriteria pencarian valid untuk Elasticsearch, fallback ke MongoDB.");
+        return await fallbackToMongo(req, res, cacheKey);
+      }
+      
+      const esResponse = await actualEsClient.search({
         index: "books",
         query: {
           bool: {
             should,
+            minimum_should_match: 1
           },
         },
       });
 
-      const results = hits.hits.map(hit => hit._source);
+      const results = esResponse.hits.hits.map(hit => hit._source);
       await redisClient.setEx(cacheKey, 604800, JSON.stringify(results));
       console.log("🔍 Hasil dari Elasticsearch");
       return res.json(results);
     } catch (esErr) {
-      console.warn("❗ Elasticsearch error, fallback ke MongoDB:", esErr.message);
+      console.warn("❗ Elasticsearch error saat pencarian, fallback ke MongoDB:", esErr.message);
+      if (esErr.meta && esErr.meta.body) {
+        console.error("Detail error Elasticsearch:", JSON.stringify(esErr.meta.body, null, 2));
+      }
+      return await fallbackToMongo(req, res, cacheKey);
     }
 
-    // Fallback ke MongoDB jika ES gagal
+  } catch (err) {
+    console.error("❌ Error pada handler pencarian utama:", err);
+    res.status(500).json({ error: "Terjadi kesalahan internal pada server." });
+  }
+});
+
+async function fallbackToMongo(req, res, cacheKey) {
+  try {
+    console.log("📚 Melakukan fallback pencarian ke MongoDB...");
+    const title = req.query.title?.toLowerCase() || "";
+    const author = req.query.author?.toLowerCase() || "";
+
     const query = {};
     if (title) query.title = { $regex: title, $options: "i" };
     if (author) query.author = { $regex: author, $options: "i" };
 
     const books = await Book.find(query);
-    await redisClient.setEx(cacheKey, 604800, JSON.stringify(books));
+    if (cacheKey) {
+        await redisClient.setEx(cacheKey, 604800, JSON.stringify(books));
+    }
     console.log("📚 Hasil dari MongoDB fallback");
-    res.json(books);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    if (!res.headersSent) {
+        return res.json(books);
+    }
+  } catch (mongoErr) {
+    console.error("❌ Error saat fallback ke MongoDB:", mongoErr);
+    if (!res.headersSent) {
+        return res.status(500).json({ error: "Terjadi kesalahan saat fallback ke MongoDB." });
+    }
   }
-});
+}
 
 module.exports = router;
