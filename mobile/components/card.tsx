@@ -1,56 +1,56 @@
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router";
 
-export default function Card(){
-    return(
-        <>
-            <View className="w-1/3 p-2">
-                <View className="bg-white rounded-lg shadow-md">
-                    <Image
-                        source={require("@/assets/cover/bumimanusia.jpeg")}
-                        className="w-full h-40 rounded-t-lg"
-                    />
-                    <View className="p-4">
-                        <Text className="text-lg font-bold text-gray-800">
-                            Book Title
-                        </Text>
-                        <Text className="text-gray-600 mt-1">
-                            Author Name
-                        </Text>
-                        <Text className="text-gray-600 mt-1">   
-                            Rp 100.000
-                        </Text>
-                        <View className="bg-green-300 px-2 py-0.5 rounded-full mt-2">
-                            <Text className="text-xs italic text-green-900">
-                                E-book
-                            </Text>
-                        </View>
-                    </View>
-                </View>
-            </View>
-        <View className="w-1/3 p-2">
-            <View className="bg-white rounded-lg shadow-md">
-                <Image
-                    source={require("@/assets/cover/bumimanusia.jpeg")}
-                    className="w-full h-40 rounded-t-lg"
-                />
-                <View className="p-4">
-                    <Text className="text-lg font-bold text-gray-800">
-                        Book Title
-                    </Text>
-                    <Text className="text-gray-600 mt-1">
-                        Author Name
-                    </Text>
-                    <Text className="text-gray-600 mt-1">
-                        Rp 100.000
-                    </Text>
-                    <View className="bg-green-300 px-2 py-0.5 rounded-full mt-2">
-                        <Text className="text-xs italic text-green-900">
-                            E-book
-                        </Text>
-                    </View>
-                </View>
-            </View>
+interface Book {
+  _id: string;
+  cover_url: string;
+  title: string;
+  author: string[];
+  price: number;
+  genre: string[];
+  book_type: string;
+}
+
+interface CardProps {
+  book: Book;
+  imageSource: any;
+}
+
+export default function Card({ book, imageSource }: CardProps) {
+  const router = useRouter();
+
+  const handlePress = () => {
+    router.push({ pathname: "/detail/[id]", params: { id: book._id } });
+  };
+
+  return (
+    <TouchableOpacity
+      onPress={handlePress}
+      className="w-[31%] bg-gray-800 rounded-2xl p-2 mb-4 shadow-md items-stretch"
+      style={{ alignSelf: "flex-start" }}
+    >
+      <Image
+        source={imageSource}
+        className="w-full h-36 rounded-lg mb-2"
+        resizeMode="cover"
+      />
+      <Text className="text-base font-bold text-white">{book.title}</Text>
+      <Text className="text-sm text-gray-200">{book.author.join(", ")}</Text>
+      <Text className="text-sm text-green-300 font-semibold mt-1">
+        Rp {book.price.toLocaleString()}
+      </Text>
+
+      {book.book_type === "e-book" ? (
+        <View className="bg-blue-300 px-2 py-0.5 rounded-full mt-1 self-start">
+          <Text className="text-xs italic text-blue-950">{book.book_type}</Text>
         </View>
-        </>
-    )
+      ) : book.book_type === "physics" ? (
+        <View className="bg-red-200 px-2 py-0.5 rounded-full mt-1 self-start">
+          <Text className="text-xs italic text-red-950">{book.book_type}</Text>
+        </View>
+      ) : (
+        <Text className="text-xs italic text-gray-500">{book.book_type}</Text>
+      )}
+    </TouchableOpacity>
+  );
 }

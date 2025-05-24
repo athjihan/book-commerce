@@ -1,5 +1,6 @@
 import { getAllBooks } from "@/services/catalogService";
 import imageMap from "@/utils/imageMap";
+import Card from "@/components/card";
 import { useEffect, useState } from "react";
 import {
   Image,
@@ -13,6 +14,7 @@ import "./global.css";
 
 // ✅ Tambah tipe Book
 interface Book {
+  _id: string;
   cover_url: string;
   title: string;
   author: string[];
@@ -60,43 +62,7 @@ export default function Index() {
               imageMap[filename] || require("@/assets/cover/default.png");
 
             return (
-                <View
-                key={index}
-                className="w-[31%] bg-gray-800 rounded-2xl p-2 mb-4 shadow-md items-stretch"
-                style={{ alignSelf: "flex-start" }}
-                >
-                <Image
-                  source={imageSource}
-                  className="w-full h-36 rounded-lg mb-2"
-                  resizeMode="cover"
-                />
-                <Text className="text-base font-bold text-white">
-                  {book.title}
-                </Text>
-                <Text className="text-sm text-gray-200">
-                  {book.author.join(", ")}
-                </Text>
-                <Text className="text-sm text-green-300 font-semibold mt-1">
-                  Rp {book.price.toLocaleString()}
-                </Text>
-                {book.book_type === "e-book" ? (
-                  <View className="bg-blue-300 px-2 py-0.5 rounded-full mt-1 self-start">
-                  <Text className="text-xs italic text-blue-950">
-                    {book.book_type}
-                  </Text>
-                  </View>
-                ) : book.book_type === "physics" ? (
-                  <View className="bg-red-200 px-2 py-0.5 rounded-full mt-1 self-start">
-                  <Text className="text-xs italic text-red-950">
-                    {book.book_type}
-                  </Text>
-                  </View>
-                ) : (
-                  <Text className="text-xs italic text-gray-500">
-                  {book.book_type}
-                  </Text>
-                )}
-                </View>
+                <Card key={index} book={book} imageSource={imageSource} />
             );
           })}
         </View>

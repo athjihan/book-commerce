@@ -10,7 +10,7 @@ export default function RootLayout() {
       screenOptions={{
         headerStyle: { backgroundColor: "#000" },
         headerTitle: () => (
-          <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 18 }}>book</Text>
+          <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 18 }}>boomerce</Text>
         ),
         headerTitleAlign: "center",
         headerRight: () => (
