@@ -26,16 +26,23 @@ export const searchBooks = async (params = {}) => {
 
     const response = await axios.get(`${BASE_URL}/`, { params: allowedParams });
 
-    const filteredData = Array.isArray(response.data)
+    console.log("📡 Data searchBooks dari backend:", response.data);
+
+    const fullData = Array.isArray(response.data)
       ? response.data.map((item) => ({
+          _id: item._id,
           title: item.title,
           author: item.author,
+          book_type: item.book_type,
+          cover_url: item.cover_url,
+          price: item.price,
+          genre: item.genre,
         }))
       : [];
 
-    await setCache(cacheKey, filteredData, 604800);
+    await setCache(cacheKey, fullData, 604800);
 
-    return filteredData;
+    return fullData;
   } catch (error) {
     let errorMessage = "Terjadi kesalahan saat mencari buku.";
     if (error.response && error.response.data && error.response.data.message) {
