@@ -1,7 +1,5 @@
-// app/_layout.tsx (RootLayout)
-
 import { Stack, useRouter } from "expo-router";
-import { Text, TouchableOpacity } from "react-native";
+import { Text, View, TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
 export default function RootLayout() {
@@ -15,7 +13,6 @@ export default function RootLayout() {
           <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 18 }}>boomerce</Text>
         ),
         headerTitleAlign: "center",
-        headerTintColor: "#fff",
         headerRight: () => (
             <TouchableOpacity
             style={{ marginRight: 16 }}
@@ -27,13 +24,6 @@ export default function RootLayout() {
             </TouchableOpacity>
         ),
       }}
-    >
-      <Stack.Screen
-        name="(tabs)"
-        options={{
-          headerShown: false,
-        }}
-      />
-    </Stack>
+    />
   );
 }
