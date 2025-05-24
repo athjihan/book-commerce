@@ -1,5 +1,5 @@
 import { getAllBooks } from "@/services/catalogService";
-import imageMap from "@/app/utils/imageMap";
+import imageMap from "@/utils/imageMap";
 import { useEffect, useState } from "react";
 import {
   Image,
@@ -56,13 +56,15 @@ export default function Index() {
         <View className="flex flex-wrap flex-row justify-between">
           {paginatedBooks.map((book, index) => {
             const filename = getFileName(book.cover_url);
-            const imageSource = imageMap[filename] || require("@/assets/cover/default.png");
+            const imageSource =
+              imageMap[filename] || require("@/assets/cover/default.png");
 
             return (
-              <View
+                <View
                 key={index}
-                className="w-[31%] bg-gray-100 rounded-2xl p-2 mb-4 shadow-md"
-              >
+                className="w-[31%] bg-gray-100 rounded-2xl p-2 mb-4 shadow-md items-stretch"
+                style={{ alignSelf: "flex-start" }}
+                >
                 <Image
                   source={imageSource}
                   className="w-full h-36 rounded-lg mb-2"
@@ -79,22 +81,22 @@ export default function Index() {
                 </Text>
                 {book.book_type === "e-book" ? (
                   <View className="bg-green-300 px-2 py-0.5 rounded-full mt-1 self-start">
-                    <Text className="text-xs italic text-green-900">
-                      {book.book_type}
-                    </Text>
+                  <Text className="text-xs italic text-green-900">
+                    {book.book_type}
+                  </Text>
                   </View>
                 ) : book.book_type === "physics" ? (
                   <View className="bg-red-200 px-2 py-0.5 rounded-full mt-1 self-start">
-                    <Text className="text-xs italic text-red-800">
-                      {book.book_type}
-                    </Text>
+                  <Text className="text-xs italic text-red-800">
+                    {book.book_type}
+                  </Text>
                   </View>
                 ) : (
                   <Text className="text-xs italic text-gray-500">
-                    {book.book_type}
+                  {book.book_type}
                   </Text>
                 )}
-              </View>
+                </View>
             );
           })}
         </View>

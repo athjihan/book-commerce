@@ -18,6 +18,11 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
 
   # book-search service
   book-search:
@@ -41,6 +46,7 @@ services:
       - ./services/book-detail/.env
     depends_on:
       - redis
+      - rabbitmq
 
   # book-display service
   book-display:
