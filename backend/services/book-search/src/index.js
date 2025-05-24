@@ -6,6 +6,7 @@ const app = express();
 const connectDB = require("./config/db");
 const connectRabbitMQ = require("./config/rabbitmq");
 const bookRoutes = require("./routes/searchRoutes");
+const indexAllBooks = require("./scripts/indexBooks");
 require("dotenv").config();
 
 const PORT = process.env.PORT || 3000;
@@ -24,7 +25,7 @@ app.use((req, res, next) => {
   };
   sanitize(req.body);
   sanitize(req.params);
-  sanitize(req.query); // Tidak overwrite req.query, hanya bersihkan properti di dalamnya
+  sanitize(req.query);
   next();
 });
 
@@ -39,7 +40,10 @@ app.use(express.json());
 
 app.use("/api/search", bookRoutes);
 
-connectDB().then(() => {
+connectDB().then(async () => {
+  await indexAllBooks(); //Indeks semua buku ke Elasticsearch saat startup (jadi data books akan ke elasticsearch)
+  console.log("📚 Semua buku telah diindeks ke Elasticsearch.");
+
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`Book-search service running on port ${PORT} 🔍`);
   });
