@@ -4,12 +4,15 @@ const mongoSanitize = require("express-mongo-sanitize");
 const rateLimit = require("express-rate-limit");
 const app = express();
 const connectDB = require("./config/db");
+const connectRabbitMQ = require("./config/rabbitmq");
 const bookRoutes = require("./routes/searchRoutes");
 require("dotenv").config();
 
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
+
+connectRabbitMQ();
 
 app.use((req, res, next) => {
   const sanitize = (obj) => {
