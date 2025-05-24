@@ -36,9 +36,9 @@ export default function Card({ book, imageSource }: CardProps) {
       />
       <Text className="text-base font-bold text-white">{book.title}</Text>
       <Text className="text-sm text-gray-200">{book.author.join(", ")}</Text>
-      <Text className="text-sm text-green-300 font-semibold mt-1">
-        Rp {book.price.toLocaleString()}
-      </Text>
+    <Text className="text-sm text-green-300 font-semibold mt-1">
+      {book.price === 0 ? "Free" : `Rp ${book.price.toLocaleString()}`}
+    </Text>
 
       {book.book_type === "e-book" ? (
         <View className="bg-blue-300 px-2 py-0.5 rounded-full mt-1 self-start">
