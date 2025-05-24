@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const mongoSanitize = require("express-mongo-sanitize");
 const rateLimit = require("express-rate-limit");
 const app = express();
@@ -7,6 +8,8 @@ const bookRoutes = require("./routes/searchRoutes");
 require("dotenv").config();
 
 const PORT = process.env.PORT || 3000;
+
+app.use(cors());
 
 app.use((req, res, next) => {
   const sanitize = (obj) => {
@@ -34,7 +37,7 @@ app.use(express.json());
 app.use("/api/search", bookRoutes);
 
 connectDB().then(() => {
-  app.listen(PORT, () => {
+  app.listen(PORT, "0.0.0.0", () => {
     console.log(`Book-search service running on port ${PORT} 🔍`);
   });
 });
