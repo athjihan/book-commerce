@@ -3,7 +3,6 @@ import imageMap from "@/utils/imageMap";
 import Card from "@/components/card";
 import { useEffect, useState } from "react";
 import {
-  Image,
   SafeAreaView,
   ScrollView,
   Text,
@@ -21,6 +20,7 @@ interface Book {
   price: number;
   genre: string[];
   book_type: string;
+  serial_number: string;
 }
 
 export default function Index() {
@@ -62,7 +62,7 @@ export default function Index() {
               imageMap[filename] || require("@/assets/cover/default.png");
 
             return (
-                <Card key={index} book={book} imageSource={imageSource} />
+              <Card key={index} book={book} imageSource={imageSource} />
             );
           })}
         </View>

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { View, Text, Image, ScrollView, ActivityIndicator } from "react-native";
-import { getBookDetailById } from "@/services/detailService"; 
+import { getBookDetailById } from "@/services/detailService";
 import imageMap from "@/utils/imageMap";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface Book {
   book_type: string;
@@ -74,49 +75,69 @@ export default function Detail() {
     : require("@/assets/cover/default.png");
 
   return (
-    <ScrollView className="flex-1 bg-black px-4 pt-6 pb-6">
-      <Image
-        source={imageSource}
-        className="w-full h-64 rounded-xl mb-4 bg-gray-700"
-        resizeMode="cover"
-      />
-      <Text className="text-white text-2xl font-bold">{book.title}</Text>
-      <Text className="text-gray-300 text-base mt-1 mb-2">
-        {book.author?.join(", ") || "Penulis tidak diketahui"}
-      </Text>
+    <SafeAreaView className="flex-1 bg-black">
+      <ScrollView className="px-4 pb-6 ">
+        <View
+          style={{
+            alignItems: "center", // Center secara horizontal
+            justifyContent: "center", // Center secara vertikal
+            marginBottom: 20,
+            backgroundColor: "#1f1f1f",
+            borderRadius: 12,
+          }}
+        >
+          <Image
+            source={imageSource}
+            style={{
+              width: "100%",
+              maxWidth: 250, // Maksimal lebar
+              height: undefined,
+              maxHeight: 400, // Maksimal tinggi
+              aspectRatio: 3 / 4, // Menjaga rasio
+            }}
+            resizeMode="cover"
+          />
+        </View>
 
-      <View className="mb-3 p-3 bg-gray-800 rounded-lg">
-        <Text className="text-green-400 font-semibold text-xl">
-          Rp {book.price?.toLocaleString() || "Harga tidak tersedia"}
-        </Text>
-        <Text className="text-gray-400 mt-1">Stok: {book.stock ?? "Tidak diketahui"}</Text>
-        <Text className="text-blue-300 italic capitalize mt-1">
-          Tipe: {book.book_type}
-        </Text>
-      </View>
 
-      <View className="mb-3 p-3 bg-gray-800 rounded-lg">
-        <Text className="text-gray-400 text-sm italic mb-1">
-          Tanggal Rilis: {book.release_date ? new Date(book.release_date).toLocaleDateString("id-ID", { year: 'numeric', month: 'long', day: 'numeric' }) : "Tidak diketahui"}
+        <Text className="text-white text-2xl font-bold">{book.title}</Text>
+        <Text className="text-white text-base mt-1 mb-2">
+          {book.author?.join(", ") || "Penulis tidak diketahui"}
         </Text>
-        <Text className="text-white font-semibold mb-1">
-          Genre: {book.genre?.join(", ") || "Tidak ada genre"}
-        </Text>
-      </View>
 
-      <View className="mb-3 p-3 bg-gray-800 rounded-lg">
-        <Text className="text-white font-bold text-lg mb-2">Sinopsis</Text>
-        <Text className="text-gray-200 text-sm leading-relaxed">
-          {book.synopsis || "Sinopsis tidak tersedia."}
-        </Text>
-      </View>
+        <View className="mb-3 p-3 rounded-lg">
+          <Text className="text-white font-semibold text-xl">
+            Rp {book.price?.toLocaleString() || "Harga tidak tersedia"}
+          </Text>
+          <Text className="text-white mt-1">Stok: {book.stock ?? "Tidak diketahui"}</Text>
+          <Text className="text-white italic capitalize mt-1">
+            Tipe: {book.book_type}
+          </Text>
+        </View>
 
-      <View className="mb-6 p-3 bg-gray-800 rounded-lg">
-        <Text className="text-white font-bold text-lg mb-2">Deskripsi</Text>
-        <Text className="text-gray-200 text-sm leading-relaxed">
-          {book.description || "Deskripsi tidak tersedia."}
-        </Text>
-      </View>
-    </ScrollView>
+        <View className="mb-3 p-3 rounded-lg">
+          <Text className="text-gray-400 text-sm italic mb-1">
+            Tanggal Rilis: {book.release_date ? new Date(book.release_date).toLocaleDateString("id-ID", { year: 'numeric', month: 'long', day: 'numeric' }) : "Tidak diketahui"}
+          </Text>
+          <Text className="text-white font-semibold mb-1">
+            Genre: {book.genre?.join(", ") || "Tidak ada genre"}
+          </Text>
+        </View>
+
+        <View className="mt-4 mb-3 p-3 rounded-lg">
+          <Text className="text-white font-bold text-lg mb-2">Sinopsis</Text>
+          <Text className="text-gray-200 text-sm leading-relaxed">
+            {book.synopsis || "Sinopsis tidak tersedia."}
+          </Text>
+        </View>
+
+        <View className="mt-4 mb-6 p-3 rounded-lg">
+          <Text className="text-white font-bold text-lg mb-2">Deskripsi</Text>
+          <Text className="text-gray-200 text-sm leading-relaxed">
+            {book.description || "Deskripsi tidak tersedia."}
+          </Text>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }

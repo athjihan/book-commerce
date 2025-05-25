@@ -5,9 +5,9 @@ import {
   ScrollView,
   ActivityIndicator,
   SafeAreaView,
-  Platform,
+  TextInput,
 } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { searchBooks } from "@/services/searchService";
 import Card from "@/components/card";
 import imageMap from "@/utils/imageMap";
@@ -20,6 +20,7 @@ interface Book {
   price: number;
   genre: string[];
   book_type: string;
+  serial_number: string;
 }
 
 function getFileName(cover_url: string | undefined): string {
@@ -34,6 +35,7 @@ export default function Search() {
   const params = useLocalSearchParams();
   const { q } = params;
 
+  const [query, setQuery] = useState(typeof q === "string" ? q : "");
   const [searchResults, setSearchResults] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -58,8 +60,8 @@ export default function Search() {
             author: Array.isArray(item.author)
               ? item.author
               : typeof item.author === 'string'
-              ? [item.author]
-              : ["Penulis Tidak Diketahui"],
+                ? [item.author]
+                : ["Penulis Tidak Diketahui"],
             cover_url: item.cover_url || "",
             price: item.price !== undefined ? item.price : 0,
             genre: item.genre || [],
@@ -102,21 +104,39 @@ export default function Search() {
 
   return (
     <SafeAreaView className="flex-1 bg-black px-4 pt-6">
+      <TextInput
+        autoFocus
+        placeholder="Cari judul atau penulis"
+        placeholderTextColor="#ccc"
+        value={query}
+        onChangeText={setQuery}
+        onSubmitEditing={() => {
+          router.setParams({ q: query });
+        }}
+        style={{
+          color: "#fff",
+          backgroundColor: "#1f1f1f",
+          borderRadius: 8,
+          padding: 12,
+          width: "100%",
+          marginBottom: 16,
+        }}
+      />
       <ScrollView>
         {searchResults.length > 0 ? (
           <>
             <Text className="text-white text-lg mb-4">
               Hasil pencarian untuk: <Text className="font-bold">{q}</Text>
             </Text>
-            <View className="flex flex-wrap flex-row gap-3 justify-start">
-              {searchResults.map((book) => {
+            <View className="flex flex-wrap flex-row justify-start">
+              {searchResults.map((book, index) => {
                 const filename = getFileName(book.cover_url);
                 const imageSource =
                   imageMap[filename] || require("@/assets/cover/default.png");
 
                 return (
                   <Card
-                    key={book._id}
+                    key={index}
                     book={book}
                     imageSource={imageSource}
                   />

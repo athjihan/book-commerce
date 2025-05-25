@@ -9,6 +9,7 @@ interface Book {
   price: number;
   genre: string[];
   book_type: string;
+  serial_number: string;
 }
 
 interface CardProps {
@@ -20,7 +21,7 @@ export default function Card({ book, imageSource }: CardProps) {
   const router = useRouter();
 
   const handlePress = () => {
-    router.push({ pathname: "/detail/[id]", params: { id: book._id } });
+    router.push({ pathname: "/(tabs)/detail/[serial_number]/[type]", params: { serial_number: book.serial_number, type: book.book_type } });
   };
 
   return (
@@ -36,9 +37,9 @@ export default function Card({ book, imageSource }: CardProps) {
       />
       <Text className="text-base font-bold text-white">{book.title}</Text>
       <Text className="text-sm text-gray-200">{book.author.join(", ")}</Text>
-    <Text className="text-sm text-green-300 font-semibold mt-1">
-      {book.price === 0 ? "Free" : `Rp ${book.price.toLocaleString()}`}
-    </Text>
+      <Text className="text-sm text-green-300 font-semibold mt-1">
+        {book.price === 0 ? "Free" : `Rp ${book.price.toLocaleString()}`}
+      </Text>
 
       {book.book_type === "e-book" ? (
         <View className="bg-blue-300 px-2 py-0.5 rounded-full mt-1 self-start">

@@ -1,10 +1,6 @@
-import { Stack, useRouter, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
-import { TextInput, View, Platform } from "react-native";
+import { Stack } from "expo-router";
 
 export default function TabsLayout() {
-  const router = useRouter();
-  const [query, setQuery] = useState("");
 
   return (
     <Stack
@@ -14,30 +10,12 @@ export default function TabsLayout() {
       }}
     >
       <Stack.Screen
+        name="detail/[serial_number]/[type]"
+        options={{ headerShown: false }}
+      ></Stack.Screen>
+      <Stack.Screen
         name="search"
-        options={{
-          headerTitle: () => (
-            <TextInput
-              autoFocus
-              placeholder="Cari judul atau penulis"
-              placeholderTextColor="#ccc"
-              value={query}
-              onChangeText={setQuery}
-              onSubmitEditing={() => {
-                router.setParams({ q: query });
-              }}
-              style={{
-                color: "#fff",
-                backgroundColor: "#1f1f1f",
-                borderRadius: 8,
-                paddingHorizontal: 12,
-                paddingVertical: Platform.OS === "ios" ? 8 : 4,
-                width: "100%",
-              }}
-            />
-          ),
-          headerTitleAlign: "center",
-        }}
+        options={{ headerShown: false }}
       />
     </Stack>
   );

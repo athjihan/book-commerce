@@ -1,5 +1,5 @@
 import { Stack, useRouter } from "expo-router";
-import { Text, View, TouchableOpacity } from "react-native";
+import { TouchableOpacity, Image } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
 export default function RootLayout() {
@@ -10,18 +10,21 @@ export default function RootLayout() {
       screenOptions={{
         headerStyle: { backgroundColor: "#000" },
         headerTitle: () => (
-          <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 18 }}>boomerce</Text>
+          <Image
+            source={require("../assets/images/logo.png")}
+            style={{ width: 120, height: 40 }}
+            resizeMode="contain" />
         ),
         headerTitleAlign: "center",
+        headerTintColor: "#fff",
         headerRight: () => (
-            <TouchableOpacity
-            style={{ marginRight: 16 }}
+          <TouchableOpacity
             onPress={() => {
               router.push("/search");
             }}
-            >
-            <Feather name="search" size={24} color="#fecaca" />
-            </TouchableOpacity>
+          >
+            <Feather name="search" size={24} color="#fff" />
+          </TouchableOpacity>
         ),
       }}
     />
