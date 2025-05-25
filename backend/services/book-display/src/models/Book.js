@@ -10,6 +10,7 @@ const storeSchema = new mongoose.Schema({
 }, { _id: false });
 
 const bookSchema = new mongoose.Schema({
+  _id: String,
   book_type: String,
   serial_number: String,
   title: String,

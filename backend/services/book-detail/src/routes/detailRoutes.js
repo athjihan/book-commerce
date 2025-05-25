@@ -18,25 +18,30 @@ const validateId = [
         .withMessage("Invalid book ID format"),
 ];
 
-router.get("/:id", limiter, validateId, async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+router.get("/:serial_number/:book_type", async (req, res) => {
+    const { serial_number, type } = req.query;
+
+    if (!serial_number && !type) {
+        return res.status(400).json({ error: "serial_number dan type wajib diisi" });
     }
 
-    const cacheKey = `book-detail:${req.params.id}`;
+    const cacheKey = `book-detail:${serial_number}:${type}`;
     const cachedData = await cache.get(cacheKey);
     if (cachedData) {
         return res.json(JSON.parse(cachedData));
     }
 
     try {
-        const book = await Book.findById(req.params.id);
+        const book = await Book.findOne({
+            serial_number,
+            book_type,
+        });
+
         if (!book) {
-            return res.status(404).json({ error: "Book not found" });
+            return res.status(404).json({ error: "Buku tidak ditemukan" });
         }
 
-        await cache.setEx(cacheKey, 604800, JSON.stringify(book)); // cache 1 minggu (7 hari)
+        await cache.setEx(cacheKey, 604800, JSON.stringify(book)); // cache 7 hari
         res.json(book);
     } catch (err) {
         res.status(500).json({ error: err.message });

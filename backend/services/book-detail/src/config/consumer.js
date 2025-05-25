@@ -35,7 +35,7 @@ const consumeEvent = async () => {
             console.log(`📨 Received event: ${type}`);
 
             if (type === "book.updated" || type === "book.deleted") {
-                const cacheKey = `book-detail:${data._id}`;
+                const cacheKey = `book-detail:${data.serial_number}:${data.book_type}`;
                 await cache.del(cacheKey);
                 console.log(`🧹 Cache cleared for key: ${cacheKey}`);
             }
