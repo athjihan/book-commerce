@@ -47,7 +47,10 @@ export default function Search() {
         setError(null);
         setSearchResults([]);
         try {
-          const resultsFromService = await searchBooks({ title: query });
+          const resultsFromService = await searchBooks({ 
+            title: query,
+            author: query
+          });
 
           const transformedResults: Book[] = resultsFromService.map((item: any, index: number) => ({
             _id: item._id || `search-result-${Date.now()}-${index}`,

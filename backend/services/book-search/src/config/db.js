@@ -2,17 +2,28 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 
 const connectDB = async () => {
-  try {
-    await mongoose.connect(process.env.MONGO_URI_PRIMARY);
-    console.log("✅ MongoDB Connected (Primary Atlas)");
-  } catch (errPrimary) {
-    console.error("❌ Failed to connect to PRIMARY:", errPrimary.message);
+  const maxRetries = 10;
+  const retryDelay = 5000; // 5 seconds
+  let attempt = 0;
+  let usePrimary = true;
+
+  while (attempt < maxRetries) {
     try {
-      await mongoose.connect(process.env.MONGO_URI_SECONDARY);
-      console.log("✅ MongoDB Connected (Secondary Atlas)");
-    } catch (errSecondary) {
-      console.error("❌ Failed to connect to SECONDARY:", errSecondary.message);
-      process.exit(1);
+      const uri = usePrimary ? process.env.MONGO_URI_PRIMARY : process.env.MONGO_URI_SECONDARY;
+      await mongoose.connect(uri);
+      console.log(`✅ MongoDB Connected (${usePrimary ? "Primary" : "Secondary"} Atlas)`);
+      return;
+    } catch (err) {
+      console.error(`❌ Failed to connect to ${usePrimary ? "PRIMARY" : "SECONDARY"}:`, err.message);
+      console.error(`Detail error ${usePrimary ? "PRIMARY" : "SECONDARY"}:`, err.stack);
+      attempt++;
+      if (attempt >= maxRetries) {
+        console.error("❌ Maximum retry attempts reached. Exiting process.");
+        process.exit(1);
+      }
+      usePrimary = !usePrimary; // Switch between primary and secondary
+      console.log(`🔄 Retrying to connect in 5 seconds... (Attempt ${attempt + 1}/${maxRetries})`);
+      await new Promise(res => setTimeout(res, retryDelay));
     }
   }
 };
