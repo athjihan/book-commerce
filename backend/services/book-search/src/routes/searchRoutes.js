@@ -42,23 +42,23 @@ router.get("/", async (req, res) => {
           }
         });
       }
-      if (author) {
+      if (author && author.trim() !== "") {
         should.push({
-          match: {
-            author: {
-              query: author,
-              operator: "or",
-              fuzziness: "AUTO"
-            }
+          multi_match: {
+            query: author,
+            type: "text",
+            fields: ["author"],
+            operator: "or"
           }
         });
       }
+
 
       if (should.length === 0) {
         console.log("Tidak ada kriteria pencarian valid untuk Elasticsearch, fallback ke MongoDB.");
         return await fallbackToMongo(req, res, cacheKey);
       }
-      
+
       const esResponse = await actualEsClient.search({
         index: "books",
         query: {
@@ -95,20 +95,22 @@ async function fallbackToMongo(req, res, cacheKey) {
 
     const query = {};
     if (title) query.title = { $regex: title, $options: "i" };
-    if (author) query.author = { $regex: author, $options: "i" };
+    if (author) {
+      query.author = { $elemMatch: { $regex: author, $options: "i" } };
+    }
 
     const books = await Book.find(query);
     if (cacheKey) {
-        await redisClient.setEx(cacheKey, 604800, JSON.stringify(books));
+      await redisClient.setEx(cacheKey, 604800, JSON.stringify(books));
     }
     console.log("📚 Hasil dari MongoDB fallback");
     if (!res.headersSent) {
-        return res.json(books);
+      return res.json(books);
     }
   } catch (mongoErr) {
     console.error("❌ Error saat fallback ke MongoDB:", mongoErr);
     if (!res.headersSent) {
-        return res.status(500).json({ error: "Terjadi kesalahan saat fallback ke MongoDB." });
+      return res.status(500).json({ error: "Terjadi kesalahan saat fallback ke MongoDB." });
     }
   }
 }
