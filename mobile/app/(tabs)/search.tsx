@@ -49,7 +49,7 @@ export default function Search() {
         setError(null);
         setSearchResults([]);
         try {
-          const resultsFromService = await searchBooks({ 
+          const resultsFromService = await searchBooks({
             title: query,
             author: query
           });
@@ -129,14 +129,14 @@ export default function Search() {
               Hasil pencarian untuk: <Text className="font-bold">{q}</Text>
             </Text>
             <View className="flex flex-wrap flex-row justify-start">
-              {searchResults.map((book, index) => {
+              {searchResults.map((book) => {
                 const filename = getFileName(book.cover_url);
                 const imageSource =
                   imageMap[filename] || require("@/assets/cover/default.png");
 
                 return (
                   <Card
-                    key={index}
+                    key={book._id}
                     book={book}
                     imageSource={imageSource}
                   />
