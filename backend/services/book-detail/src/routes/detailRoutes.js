@@ -6,7 +6,7 @@ const rateLimit = require("express-rate-limit");
 
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000,
-  max: 100,
+  max: 10000,
   message: "Terlalu banyak permintaan dari IP ini, silakan coba lagi nanti.",
   standardHeaders: true,
   legacyHeaders: false,

@@ -31,7 +31,7 @@ app.use((req, res, next) => {
 
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000,
-  max: 100,
+  max: 10000,
   message: "Terlalu banyak permintaan dari IP ini, coba lagi nanti.",
 });
 app.use(limiter);

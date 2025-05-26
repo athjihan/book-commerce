@@ -6,7 +6,7 @@ const rateLimit = require("express-rate-limit");
 // ✅ Middleware: Batasi 100 request per menit per IP
 const limiter = rateLimit({
     windowMs: 60 * 1000,
-    max: 100,
+    max: 10000,
     message: {
         status: 429,
         error: "Terlalu banyak permintaan, silakan coba lagi nanti.",
