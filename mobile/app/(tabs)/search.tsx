@@ -67,7 +67,7 @@ export default function Search() {
               price: item.price !== undefined ? item.price : 0,
               genre: item.genre || [],
               book_type: item.book_type || "unknown",
-              serial_number: item.serial_number,
+              serial_number: item.serial_number || `unknown-${index}`,
             })
           );
 
