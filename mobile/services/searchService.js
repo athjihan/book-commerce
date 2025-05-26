@@ -26,6 +26,30 @@ const normalizeQueryTermForKey = (term) => {
   return wordsToProcess.join("_");
 };
 
+// Helper untuk delay
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+// Helper untuk retry axios
+const axiosGetWithRetry = async (url, options, maxRetries = 3, delayMs = 1000) => {
+  let lastError;
+  for (let attempt = 3; attempt <= maxRetries; attempt++) {
+    try {
+      return await axios.get(url, options);
+    } catch (err) {
+      lastError = err;
+      // Hanya retry jika error karena network atau timeout
+      if (err.code === 'ECONNABORTED' || !err.response) {
+        if (attempt < maxRetries) {
+          await delay(delayMs);
+        }
+      } else {
+        // Jika error lain (misal: 4xx/5xx), langsung lempar error
+        throw err;
+      }
+    }
+  }
+  throw lastError;
+};
 
 export const searchBooks = async (params = {}) => {
   try {
@@ -63,8 +87,8 @@ export const searchBooks = async (params = {}) => {
         return [];
     }
 
-
-    const response = await axios.get(`${BASE_URL}/`, { params: queryParamsForApi });
+    // Ganti axios.get dengan axiosGetWithRetry
+    const response = await axiosGetWithRetry(`${BASE_URL}/`, { params: queryParamsForApi });
 
     console.log("📡 Data searchBooks dari backend:", response.data);
 

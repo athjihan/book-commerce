@@ -3,6 +3,12 @@ import Constants from "expo-constants";
 import { getCache, setCache } from "../utils/cache";
 
 const BASE_URL = Constants.expoConfig.extra.BOOK_DETAIL_API;
+const MAX_RETRIES = 3;
+const RETRY_DELAY_MS = 1000;
+
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 export const getBookDetailById = async (serial_number, type) => {
   if (!BASE_URL) {
@@ -38,32 +44,40 @@ export const getBookDetailById = async (serial_number, type) => {
   const requestUrl = `${BASE_URL}/${encodeURIComponent(serial_number)}/${encodeURIComponent(type)}`;
   console.log("🌐 Request URL (frontend):", requestUrl);
 
-  try {
-    const response = await axios.get(requestUrl);
-    console.log("📖 Data detail buku diterima dari API (frontend):", response.data);
+  let lastError;
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const response = await axios.get(requestUrl);
+      console.log("📖 Data detail buku diterima dari API (frontend):", response.data);
 
-    if (response.data && typeof response.data === 'object') {
-      await setCache(cacheKey, response.data, 604800);
-      return response.data;
-    } else {
-      console.error("Data API tidak valid:", response.data);
-      throw new Error("Format data dari API tidak sesuai");
+      if (response.data && typeof response.data === 'object') {
+        await setCache(cacheKey, response.data, 604800);
+        return response.data;
+      } else {
+        console.error("Data API tidak valid:", response.data);
+        throw new Error("Format data dari API tidak sesuai");
+      }
+    } catch (error) {
+      lastError = error;
+      if (attempt < MAX_RETRIES) {
+        console.warn(`Percobaan ke-${attempt} gagal, mencoba ulang dalam ${RETRY_DELAY_MS}ms...`);
+        await delay(RETRY_DELAY_MS);
+      }
     }
-
-  } catch (error) {
-    let errorMessage = "Terjadi kesalahan saat mengambil detail buku";
-    if (error.response) {
-      console.error(`🚨 Error API ${error.response.status}:`, error.response.data);
-      errorMessage = error.response.data?.error || error.response.data?.message || `Server error: ${error.response.status}`;
-    } else if (error.request) {
-      console.error("🚨 Error Network/Request:", error.request);
-      errorMessage = "Tidak dapat terhubung ke server. Periksa koneksi internet Anda.";
-    } else {
-      console.error("🚨 Error Lain:", error.message);
-      errorMessage = error.message;
-    }
-    const errToThrow = new Error(errorMessage);
-    errToThrow.response = error.response;
-    throw errToThrow;
   }
+
+  let errorMessage = "Terjadi kesalahan saat mengambil detail buku";
+  if (lastError && lastError.response) {
+    console.error(`🚨 Error API ${lastError.response.status}:`, lastError.response.data);
+    errorMessage = lastError.response.data?.error || lastError.response.data?.message || `Server error: ${lastError.response.status}`;
+  } else if (lastError && lastError.request) {
+    console.error("🚨 Error Network/Request:", lastError.request);
+    errorMessage = "Tidak dapat terhubung ke server. Periksa koneksi internet Anda.";
+  } else if (lastError) {
+    console.error("🚨 Error Lain:", lastError.message);
+    errorMessage = lastError.message;
+  }
+  const errToThrow = new Error(errorMessage);
+  if (lastError && lastError.response) errToThrow.response = lastError.response;
+  throw errToThrow;
 };
