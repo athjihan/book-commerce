@@ -46,7 +46,7 @@ router.get("/", async (req, res) => {
         should.push({
           multi_match: {
             query: author,
-            type: "text",
+            type: "best_fields",
             fields: ["author"],
             operator: "or"
           }

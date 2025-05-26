@@ -24,7 +24,7 @@ interface Book {
 }
 
 function getFileName(cover_url: string | undefined): string {
-  if (!cover_url || typeof cover_url !== 'string') {
+  if (!cover_url || typeof cover_url !== "string") {
     return "default.png";
   }
   const parts = cover_url.split("/");
@@ -51,26 +51,31 @@ export default function Search() {
         try {
           const resultsFromService = await searchBooks({
             title: query,
-            author: query
+            author: query,
           });
 
-          const transformedResults: Book[] = resultsFromService.map((item: any, index: number) => ({
-            _id: item._id || `search-result-${Date.now()}-${index}`,
-            title: item.title || "Tanpa Judul",
-            author: Array.isArray(item.author)
-              ? item.author
-              : typeof item.author === 'string'
+          const transformedResults: Book[] = resultsFromService.map(
+            (item: any, index: number) => ({
+              _id: item._id || `search-result-${Date.now()}-${index}`,
+              title: item.title || "Tanpa Judul",
+              author: Array.isArray(item.author)
+                ? item.author
+                : typeof item.author === "string"
                 ? [item.author]
                 : ["Penulis Tidak Diketahui"],
-            cover_url: item.cover_url || "",
-            price: item.price !== undefined ? item.price : 0,
-            genre: item.genre || [],
-            book_type: item.book_type || "unknown",
-          }));
+              cover_url: item.cover_url || "",
+              price: item.price !== undefined ? item.price : 0,
+              genre: item.genre || [],
+              book_type: item.book_type || "unknown",
+              serial_number: item.serial_number,
+            })
+          );
 
           setSearchResults(transformedResults);
         } catch (err: any) {
-          setError(err.message || "Terjadi kesalahan saat melakukan pencarian.");
+          setError(
+            err.message || "Terjadi kesalahan saat melakukan pencarian."
+          );
           console.error("Search error:", err);
         } finally {
           setIsLoading(false);
@@ -136,7 +141,7 @@ export default function Search() {
 
                 return (
                   <Card
-                    key={book._id}
+                    key={`${book.serial_number}-${book.book_type}`}
                     book={book}
                     imageSource={imageSource}
                   />
@@ -145,7 +150,8 @@ export default function Search() {
             </View>
           </>
         ) : (
-          q && !isLoading && (
+          q &&
+          !isLoading && (
             <Text className="text-gray-400 text-lg text-center mt-10">
               Tidak ada hasil yang ditemukan untuk {q}.
             </Text>

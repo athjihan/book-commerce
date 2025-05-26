@@ -23,6 +23,24 @@ async function indexAllBooks() {
           title: book.title,
           author: book.author,
           description: book.description,
+          serial_number: book.serial_number,
+          book_type: book.book_type,
+          release_date: book.release_date,
+          genre: book.genre,
+          synopsis: book.synopsis,
+          price: book.price,
+          stock: book.stock,
+          cover_url: book.cover_url,
+          store: {
+            store_name: book.store.store_name,
+            store_phoneNumber: book.store.store_phoneNumber,
+            store_email: book.store.store_email,
+            store_address: book.store.store_address,
+            store_city: book.store.store_city,
+            store_country: book.store.store_country,
+          },
+          created_at: book.created_at,
+          // Tambahkan field lain yang diperlukan sesuai dengan skema buku
         },
       });
     }
