@@ -39,7 +39,6 @@ export default function Search() {
   const [searchResults, setSearchResults] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
   useEffect(() => {
     const performSearch = async () => {
       const query = typeof q === "string" ? q.trim() : "";
@@ -53,6 +52,8 @@ export default function Search() {
             title: query,
             author: query,
           });
+
+          console.log("Data diterima dari searchBooks:", resultsFromService);
 
           const transformedResults: Book[] = resultsFromService.map(
             (item: any, index: number) => ({

@@ -41,8 +41,12 @@ app.use(express.json());
 app.use("/api/search", bookRoutes);
 
 connectDB().then(async () => {
-  await indexAllBooks(); //Indeks semua buku ke Elasticsearch saat startup (jadi data books akan ke elasticsearch)
-  console.log("📚 Semua buku telah diindeks ke Elasticsearch.");
+  try {
+    await indexAllBooks(); // Indeks semua buku ke Elasticsearch saat startup
+    console.log("📚 Berhasil mengindeks semua buku ke Elasticsearch.");
+  } catch (error) {
+    console.error("❌ Gagal mengindeks buku ke Elasticsearch:", error);
+  }
 
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`Book-search service running on port ${PORT} 🔍`);

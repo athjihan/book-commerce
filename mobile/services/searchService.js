@@ -77,6 +77,20 @@ export const searchBooks = async (params = {}) => {
           cover_url: item.cover_url,
           price: item.price,
           genre: item.genre,
+          serial_number: item.serial_number,
+          store: {
+            store_name: item.store?.store_name || "",
+            store_phoneNumber: item.store?.store_phoneNumber || "",
+            store_email: item.store?.store_email || "",
+            store_address: item.store?.store_address || "",
+            store_city: item.store?.store_city || "",
+            store_country: item.store?.store_country || ""
+          },
+          release_date: item.release_date,
+          stock: item.stock,
+          created_at: item.created_at,
+          description: item.description,
+          synopsis: item.synopsis
         }))
       : [];
 
